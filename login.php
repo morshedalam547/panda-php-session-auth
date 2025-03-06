@@ -1,18 +1,12 @@
 <?php
-
-session_start();
-
 $pageTitle = "Login Page";
 
 // header
 include 'includes/header.php';
 
-
-//  Nav Bar 
+  //  Nav Bar 
 include 'includes/navbar.php';
 
-
-//
 $messageText = '';
 $messageType = '';
 
@@ -20,39 +14,41 @@ $messageType = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
+     $email = $_POST['email'];
+     $password = $_POST['password'];
 
     // validation 
     if (empty($email) || empty($password)) {
-        echo $email, $password;
-        $message = 'All fields are required';
-        $messageType = 'danger';
-    }
+         $messageText = 'All fields are required';
+         $messageType = 'danger';
+    } else {
+        if (isset($_SESSION["users"][$email])) {
+            $hashed_password = $_SESSION["users"][$email];
+            
+            if (password_verify($password, $hashed_password)) {
+                $messageText = "Login Success";
+                $messageType = "success";
 
-    if (isset($_SESSION["users"][$email])) {
-        $user_email = $_SESSION["users"][$email];
-        
-        if($user_email == $password) {
-            $messageText = "Login Success";
-            $messageType = "success";
+                 $_SESSION['logged_in_user'] = $email;
+                $_SESSION['loggedin'] = true;
 
-            $_SESSION['logged_in_user'] = "Hello You are logged in";
-
-            header("Location: dashboard.php");
-        }
-        else {
+                // Redirect to dashboard after 2 seconds using js setTimeout function
+                echo "<script>
+                        setTimeout(function() {
+                            window.location.href = 'dashboard.php';
+                        }, 2000);
+                      </script>"
+                    ;
+            } else {
+                $messageText = "Invalid Email or Password";
+                $messageType = "danger";
+            }
+        } else {
             $messageText = "Invalid Email or Password";
             $messageType = "danger";
         }
     }
-    else {
-        $messageText = "Invalid Email or Password";
-        $messageType = "danger";
-    }
 }
-
 
 ?>
 
@@ -80,7 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </form>
     </div>
 </div>
-
 
 <?php
 // footer
