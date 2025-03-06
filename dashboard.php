@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 $pageTitle = "Login Page";
 
 // header
@@ -22,9 +20,9 @@ include 'includes/navbar.php';
 
         <h1 class="text-success">
             <?php
-                if (isset($_SESSION["logged_in_user"])) {
-                    echo $_SESSION["logged_in_user"];
-                }
+            if (isset($_SESSION["logged_in_user"])) {
+                echo $_SESSION["logged_in_user"];
+            }
             ?>
         </h1>
 
