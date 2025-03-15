@@ -24,6 +24,7 @@ $messageText = '';
             $messageType = 'danger';
         } else {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            
             $_SESSION["users"][$email] = $hashedPassword;
 
             $messageText = "Registration successful. You can login now.";
