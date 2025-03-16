@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
          $messageType = 'danger';
     } else {
         if (isset($_SESSION["users"][$email])) {
+
             $hashed_password = $_SESSION["users"][$email];
             
             if (password_verify($password, $hashed_password)) {

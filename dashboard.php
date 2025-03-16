@@ -116,7 +116,7 @@ $products = [
         $counter = 0;
         $colNum = 12;
 
-        foreach ($products as $product):
+        foreach ($_SESSION['products'] as $product) {
 
             if ($counter == 1) {
                 $colNum = 6;
@@ -146,7 +146,7 @@ $products = [
 
             <?php
             $counter++;
-        endforeach;
+            }
         ?>
 
 
