@@ -7,90 +7,7 @@ include 'includes/header.php';
 // Nav Bar 
 include 'includes/navbar.php';
 
-
-
-// all products
-
-$products = [
-    [
-        'title' => 'Panda T-Shirt',
-        'description' => 'This is dedicated to all panda fans. Get your panda t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-    [
-        'title' => 'Fox T-Shirt',
-        'description' => 'This is dedicated to all Fox fans. Get your Fox t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-    [
-        'title' => 'Cat T-Shirt',
-        'description' => 'This is dedicated to all Cat fans. Get your Cat t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-    [
-        'title' => 'Lion T-Shirt',
-        'description' => 'This is dedicated to all Lion fans. Get your Lion t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-    [
-        'title' => 'Cat T-Shirt',
-        'description' => 'This is dedicated to all Cat fans. Get your Cat t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-    [
-        'title' => 'Lion T-Shirt',
-        'description' => 'This is dedicated to all Lion fans. Get your Lion t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-    [
-        'title' => 'Lion T-Shirt',
-        'description' => 'This is dedicated to all Lion fans. Get your Lion t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-    [
-        'title' => 'Cat T-Shirt',
-        'description' => 'This is dedicated to all Cat fans. Get your Cat t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-    [
-        'title' => 'Lion T-Shirt',
-        'description' => 'This is dedicated to all Lion fans. Get your Lion t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-    [
-        'title' => 'Lion T-Shirt',
-        'description' => 'This is dedicated to all Lion fans. Get your Lion t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-    [
-        'title' => 'Cat T-Shirt',
-        'description' => 'This is dedicated to all Cat fans. Get your Cat t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-    [
-        'title' => 'Lion T-Shirt',
-        'description' => 'This is dedicated to all Lion fans. Get your Lion t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-    [
-        'title' => 'Lion T-Shirt',
-        'description' => 'This is dedicated to all Lion fans. Get your Lion t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-    [
-        'title' => 'Cat T-Shirt',
-        'description' => 'This is dedicated to all Cat fans. Get your Cat t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-    [
-        'title' => 'Lion T-Shirt',
-        'description' => 'This is dedicated to all Lion fans. Get your Lion t-shirt now.',
-        'image' => 'https://placehold.co/400x400'
-    ],
-];
-
-
-
+include 'includes/db.php';
 ?>
 
 <!-- Dashboard Content -->
@@ -113,22 +30,13 @@ $products = [
     <div class="row g-5">
 
         <?php
-        $counter = 0;
-        $colNum = 12;
 
-        foreach ($_SESSION['products'] as $product) {
+        $stmt = $pdo->query("SELECT * FROM products");
+        $products = $stmt->fetchAll();
 
-            if ($counter == 1) {
-                $colNum = 6;
-            } elseif ($counter == 2) {
-                $colNum = 4;
-            } elseif ($counter > 3 && $counter < 5) {
-                $colNum = 3;
-            } elseif ($counter > 6 && $counter < 11) {
-                $colNum = 2;
-            }
+        foreach ($products as $product) {
 
-            ?>
+        ?>
 
             <div class="col-md-<?php echo $colNum ?>">
                 <div class="card" style="width: 18rem;">
@@ -139,24 +47,16 @@ $products = [
                             <?php echo $product['description']; ?>
                         </p>
                         <a href="#" class="btn btn-primary">View Details</a>
+                        <a href="edit_product.php?id=<?php echo $product['id'] ?>" class="btn btn-primary">Edit Product</a>
+                        <a href="delete_product.php?id=<?php echo $product['id'] ?>" class="btn btn-danger">Delete Product</a>
                     </div>
                 </div>
             </div>
 
 
-            <?php
-            $counter++;
-            }
+        <?php
+        }
         ?>
-
-
-        <p>
-            <?php
-            echo $counter;
-            ?>
-        </p>
-
-
     </div>
 </div>
 

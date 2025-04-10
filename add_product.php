@@ -1,5 +1,5 @@
 <?php
-$pageTitle = "Register Page";
+$pageTitle = "Add Page";
 
 //   header
 include 'includes/header.php';
@@ -7,10 +7,11 @@ include 'includes/header.php';
 // Nav Bar 
 include 'includes/navbar.php';
 
+
+include 'includes/db.php';
+
 $messageText = '';
 $messageType = '';
-
-print_r(isset($_SESSION['products']) ? $_SESSION['products'] : []);
 
 // Logical Section
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -35,13 +36,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $imgPath = $imgDirectiory . $imgName;
 
         if (move_uploaded_file($image['tmp_name'], $imgPath)) {
-            $_SESSION['products'][] = [
-                'title' => $title,
-                'description' => $description,
-                'image' => $imgPath
-            ];
-            $messageText = 'Product Added Successfully';
-            $messageType = 'success';
+
+            $stmt = $pdo->prepare("INSERT INTO products (title, description, image) VALUES (:title, :description, :image)");
+
+
+            if ($stmt->execute(['title' => $title,'description' => $description,'image' => $imgPath])) {
+                $messageText = 'Product Added Successfully';
+                $messageType = 'success';
+            } else {
+                $messageText = 'Database Insertion Failed';
+                $messageType = 'danger';
+            }
         } else {
             $messageText = 'Image Upload Failed';
             $messageType = 'danger';
