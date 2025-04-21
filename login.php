@@ -4,8 +4,10 @@ $pageTitle = "Login Page";
 // header
 include 'includes/header.php';
 
-  //  Nav Bar 
+//  Nav Bar 
 include 'includes/navbar.php';
+
+include 'includes/db.php';
 
 $messageText = '';
 $messageType = '';
@@ -14,35 +16,33 @@ $messageType = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-     $email = $_POST['email'];
-     $password = $_POST['password'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
     // validation 
     if (empty($email) || empty($password)) {
-         $messageText = 'All fields are required';
-         $messageType = 'danger';
+        $messageText = 'All fields are required';
+        $messageType = 'danger';
     } else {
-        if (isset($_SESSION["users"][$email])) {
-            $hashed_password = $_SESSION["users"][$email];
-            
-            if (password_verify($password, $hashed_password)) {
-                $messageText = "Login Success";
-                $messageType = "success";
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->execute(['email' => $email]);
 
-                 $_SESSION['logged_in_user'] = $email;
-                $_SESSION['loggedin'] = true;
+        $user = $stmt->fetch();
 
-                // Redirect to dashboard after 2 seconds using js setTimeout function
-                echo "<script>
+        if ($user && password_verify($password, $user['password'])) {
+            $messageText = "Login Success";
+            $messageType = "success";
+
+            $_SESSION['logged_in_user'] = $email;
+            $_SESSION['loggedin'] = true;
+
+            // Redirect to dashboard after 2 seconds using js setTimeout function
+            echo "<script>
                         setTimeout(function() {
                             window.location.href = 'dashboard.php';
                         }, 2000);
                       </script>"
-                    ;
-            } else {
-                $messageText = "Invalid Email or Password";
-                $messageType = "danger";
-            }
+            ;
         } else {
             $messageText = "Invalid Email or Password";
             $messageType = "danger";

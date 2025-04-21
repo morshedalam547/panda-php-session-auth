@@ -7,6 +7,8 @@ include 'includes/header.php';
 // Nav Bar 
 include 'includes/navbar.php';
 
+include 'includes/db.php';
+
 $messageText = '';
     $messageType = '';
 
@@ -23,11 +25,26 @@ $messageText = '';
             $messageText = 'Invalid email format';
             $messageType = 'danger';
         } else {
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $_SESSION["users"][$email] = $hashedPassword;
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+            $stmt->execute(['email' => $email]);
 
-            $messageText = "Registration successful. You can login now.";
-            $messageType = "success";
+            if ($stmt->fetch()) {
+                $messageText = 'Email already exists';
+                $messageType = 'danger';
+            } else {
+                $messageText = '';
+            }
+
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $stmt = $pdo->prepare("INSERT INTO users (email, password) VALUES (:email, :password)");
+            
+            if($stmt->execute(['email' => $email,'password' => $hashedPassword])) {
+                $messageText = 'Registration successful. You can login now.';
+                $messageType = 'success';
+            } else {
+                $messageText = 'Registration failed. Please try again.';
+                $messageType = 'danger';
+            }
         }
     }
     ?>
